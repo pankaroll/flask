@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przesyłki</title>
+</head>
+<body>
+    <h1>Przesyłki dla: {{ email }}</h1>
+
+    {% if parcels %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID Przesyłki</th>
+                    <th>Opis</th>
+                    <th>Status</th>
+                    <!-- Dodaj więcej kolumn według potrzeb -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for parcel in parcels %}
+                    <tr>
+                        <td>{{ parcel[0] }}</td>
+                        <td>{{ parcel[1] }}</td>
+                        <td>{{ parcel[2] }}</td>
+                        <!-- Dopasuj indeksy do schematu bazy danych -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Brak przesyłek przypisanych do tego adresu e-mail.</p>
+    {% endif %}
+
+    <a href="/">Powrót do strony głównej</a>
+</body>
+</html>

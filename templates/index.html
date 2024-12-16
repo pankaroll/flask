@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<h1>Wybierz akcję</h1>
+<form action="/action1" method="POST">
+    <button type="submit">Nadaj przesyłkę</button>
+</form>
+<form action="/action2" method="POST">
+    <button type="submit">Wyświetl historię przesyłek</button>
+</form>
+<form action="/action3" method="POST">
+    <button type="submit">rej</button>
+</form>
+<script>
+    // Wyświetlanie alertu, jeśli jest komunikat o błędzie
+    const errorMessage = "{{ error_message }}";
+    if (errorMessage) {
+        alert(errorMessage);
+    }
+</script>
+{% endblock %}
+

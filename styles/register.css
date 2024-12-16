@@ -1,0 +1,20 @@
+div {
+    text-align: center;
+    background-color: red;
+}
+
+label, input, button {
+    display: block; /* Każdy element w nowym wierszu */
+    width: 100%; /* Można dostosować szerokość */
+    color: rebeccapurple;
+    background-color: red;
+}
+
+input[type="radio"] {
+    display: inline-block; /* Pozwala zachować radio obok siebie */
+    width: auto;
+}
+
+button {
+    width: auto; /* Przycisk nie zajmuje całej szerokości */
+}

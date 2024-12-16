@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Rejestracja</title>
+<style>
+.mid-box{
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+}
+form div {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+label, input, button {
+    display: block; /* Każdy element w nowym wierszu */
+    width: 100%; /* Można dostosować szerokość */
+
+}
+
+input[type="radio"] {
+    display: inline-block; /* Pozwala zachować radio obok siebie */
+    width: auto;
+}
+
+button {
+    width: auto; /* Przycisk nie zajmuje całej szerokości */
+}
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="mid-box">
+    <form action="/register" method="POST">
+        <div>
+            <label for="user-input">Zarejestruj się: </label>
+        </div>
+        <div>
+            <label for="user-input"> Wybierz jedno: </label>
+            <input type="radio" id="str" name="user-input" value="private" required> Osoba prywatna
+            <input type="radio" id="str" name="user-input" value="company" required> Firma
+        </div>
+        <div>
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="user-input">NIP</label>
+            <input type="text" id="user-input" name="user-input">
+        </div>
+        <div>
+            <label for="user-input">Nr. tel</label>
+            <input type="text" id="user-input" name="user-input" required>
+        </div>
+        <div>
+            <label for="user-input">Imie lub nazwa firmy</label>
+            <input type="email" id="user-input" name="user-input" required>
+        </div>
+        <div>
+            <label for="user-input">Nazwisko</label>
+            <input type="email" id="user-input" name="user-input">
+        </div>
+        <div>
+            <button type="submit">Zarejestruj</button>
+        </div>
+    </form>
+    <div>
+        <form action="/" method="POST">
+            <button type="submit">Powrót</button>
+        </form>
+    </div>
+    <script>
+        // Wyświetlanie alertu, jeśli jest komunikat o błędzie
+        const errorMessage = "{{ error_message }}";
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    </script>
+</div>
+{% endblock %}
+

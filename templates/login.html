@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Logowanie</title>
+{% endblock %}
+
+{% block body %}
+<form action="/logowanie" method="POST">
+    <label for="user-input">Zaloguj się: </label>
+    <input type="text" id="user-input" name="user-input" required>
+    <button type="submit">Zaloguj</button>
+</form>
+
+{% endblock %}
+
