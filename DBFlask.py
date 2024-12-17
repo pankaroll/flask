@@ -59,7 +59,6 @@ def register_sender():
     cursor = conn.cursor()
 
     try:
-        # Wywołaj procedurę składową
         cursor.execute("""
             EXECUTE PROCEDURE DodajNadawce (
                 ?, ?, ?, ?, ?, ?, ?
@@ -67,7 +66,6 @@ def register_sender():
         """, (email, phone, 'firma' if user_type == 'company' else 'osoba_prywatna', 
               name, nip, name if user_type == 'private' else None, surname))
         
-        # Zatwierdź transakcję
         conn.commit()
         message = "Nadawca został pomyślnie zarejestrowany!"
     except Exception as e:
@@ -76,7 +74,6 @@ def register_sender():
     finally:
         conn.close()
 
-    # Przekaż komunikat do szablonu
     return render_template('register.html', success_message=message)
 
 @app.route('/add_package', methods=['POST'])
@@ -191,9 +188,9 @@ def id_sender_find(email):
     
     if result:
         print(result)
-        return int(result[0])  # Zwróć ID_NADAWCY (pierwsza kolumna wyniku)
+        return int(result[0])
     else:
-        return None  # Jeśli brak wyników, zwróć None
+        return None
 
 def login_check(text):
     conn = get_db_connection()
@@ -208,7 +205,7 @@ def login_check(text):
     else:
         return False
     
-def customer_check(text): #jan.kowalski@example.com firma5@example.com
+def customer_check(text): 
     conn = get_db_connection()
     cursor = conn.cursor()
     data = text
@@ -220,9 +217,6 @@ def customer_check(text): #jan.kowalski@example.com firma5@example.com
         return True
     else:
         return False
-    
-    
-
     
 if __name__=='__main__':
     app.run(debug=True)

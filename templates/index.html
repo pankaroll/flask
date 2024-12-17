@@ -2,23 +2,55 @@
 
 {% block head %}
 <style>
-    button{
-        width: 200px;
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: url('https://eliteextra.com/wp-content/uploads/2024/05/exploring-the-7-main-types-of-delivery-header.png') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+    }
+
+    .mid-box {
+        width: 300px;
+        margin: 100px auto;
+        padding: 20px;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.9); 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #444;
+    }
+
+
+    button {
+        width: 100%;
         height: 50px;
         background-color: rgb(64, 202, 179);
+        color: white;
         border: none;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
         border-radius: 10px;
-        font-weight: bolder;
-       
-
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
     }
-    .mid-box{
-    width: 250px;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: Arial, Helvetica, sans-serif;
-}
+
+    button:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.05);
+    }
+
+    button:active {
+        background-color: rgb(44, 142, 129);
+        transform: scale(0.98);
+    }
 </style>
 {% endblock %}
 
@@ -34,14 +66,9 @@
     <form action="/action3" method="POST">
         <button type="submit">Rejestracja</button>
     </form>
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
 </div>
 
-<script>
-    // Wyświetlanie alertu, jeśli jest komunikat o błędzie
-    const errorMessage = "{{ error_message }}";
-    if (errorMessage) {
-        alert(errorMessage);
-    }
-</script>
 {% endblock %}
-

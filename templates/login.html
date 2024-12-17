@@ -2,6 +2,83 @@
 
 {% block head %}
 <title>Logowanie</title>
+<style>
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: url('https://eliteextra.com/wp-content/uploads/2024/05/exploring-the-7-main-types-of-delivery-header.png') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+    }
+
+
+    form {
+        width: 300px;
+        margin: 150px auto;
+        padding: 20px;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.9); 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    input[type="text"] {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        height: 40px;
+        background-color: rgb(64, 202, 179);
+        color: white;
+        border: none;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.05);
+    }
+
+    button:active {
+        background-color: rgb(44, 142, 129);
+        transform: scale(0.98);
+    }
+
+
+    @media (max-width: 480px) {
+        form {
+            width: 90%;
+            padding: 15px;
+        }
+        input[type="text"] {
+            font-size: 14px;
+        }
+        button {
+            font-size: 14px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -14,4 +91,3 @@
     <button type="submit">Powrót</button>
 </form>
 {% endblock %}
-

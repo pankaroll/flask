@@ -3,31 +3,103 @@
 {% block head %}
 <title>Rejestracja</title>
 <style>
-.mid-box{
-    width: 250px;
-    margin-left: auto;
-    margin-right: auto;
-}
-form div {
-    text-align: center;
-    margin-bottom: 15px;
-}
 
-label, input, button {
-    display: block; /* Każdy element w nowym wierszu */
-    width: 100%; /* Można dostosować szerokość */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: url('https://eliteextra.com/wp-content/uploads/2024/05/exploring-the-7-main-types-of-delivery-header.png') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+    }
 
-}
 
-input[type="radio"] {
-    display: inline-block; /* Pozwala zachować radio obok siebie */
-    width: auto;
-}
+    .mid-box {
+        width: 350px;
+        margin: 100px auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9); 
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-button {
-    width: auto; /* Przycisk nie zajmuje całej szerokości */
-}
+    form div {
+        margin-bottom: 15px;
+    }
 
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    input[type="text"], input[type="email"], input[type="radio"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    input[type="radio"] {
+        width: auto; 
+        margin-right: 10px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: rgb(64, 202, 179);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.05);
+    }
+
+    button:active {
+        background-color: rgb(44, 142, 129);
+        transform: scale(0.98);
+    }
+
+
+    p {
+        text-align: center;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    p[style="color: green;"] {
+        color: green;
+    }
+
+    p[style="color: red;"] {
+        color: red;
+    }
+
+    @media (max-width: 480px) {
+        .mid-box {
+            width: 90%;
+            padding: 15px;
+        }
+
+        button {
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="email"] {
+            font-size: 14px;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -77,32 +149,25 @@ button {
     {% if error_message %}
         <p style="color: red;">{{ error_message }}</p>
     {% endif %}
-    <script>
-        // Wyświetlanie alertu, jeśli jest komunikat o błędzie
-        const errorMessage = "{{ error_message }}";
-        if (errorMessage) {
-            alert(errorMessage);
-        }
-
-        function toggleNIP() {
-            const nipField = document.getElementById('nip-field');
-            const privateOption = document.getElementById('private');
-            const sur = document.getElementById('surn')
-            const nameLabel = document.getElementById('name-label');
-            if (privateOption.checked) {
-                nipField.style.display = 'none'; // Ukryj pole NIP
-                sur.style.display = 'block';
-                nameLabel.textContent = 'Imię';
-            } else {
-                nipField.style.display = 'block';
-                sur.style.display = 'none';
-                nameLabel.textContent = 'Nazwa'; 
-            }
-        }
-
-        // Wywołaj funkcję przy ładowaniu, aby ustawić stan początkowy
-        document.addEventListener('DOMContentLoaded', toggleNIP);
-    </script>
 </div>
-{% endblock %}
+<script>
 
+    function toggleNIP() {
+        const nipField = document.getElementById('nip-field');
+        const privateOption = document.getElementById('private');
+        const sur = document.getElementById('surn');
+        const nameLabel = document.getElementById('name-label');
+        if (privateOption.checked) {
+            nipField.style.display = 'none'; 
+            sur.style.display = 'block';
+            nameLabel.textContent = 'Imię';
+        } else {
+            nipField.style.display = 'block';
+            sur.style.display = 'none';
+            nameLabel.textContent = 'Nazwa';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', toggleNIP);
+</script>
+{% endblock %}

@@ -1,12 +1,65 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Potwierdzenie</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potwierdzenie</title>
+<style>
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: url('https://eliteextra.com/wp-content/uploads/2024/05/exploring-the-7-main-types-of-delivery-header.png') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        color: #333;
+    }
+
+    .container {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #444;
+    }
+
+    a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: rgb(64, 202, 179);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    a:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.05);
+    }
+
+    a:active {
+        background-color: rgb(44, 142, 129);
+        transform: scale(0.98);
+    }
+</style>
 {% endblock %}
 
 {% block body %}
+<div class="container">
     <h1>{{ message }}</h1>
-    <a href="/">Wróć do memu</a>
+    <a href="/">Wróć do menu</a>
+</div>
 {% endblock %}

@@ -1,48 +1,136 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodaj Przesyłkę, Odbiorcę i Adres</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            width: 600px;
-            margin: 0 auto;
-        }
-        form div {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dodaj Przesyłkę, Odbiorcę i Adres</title>
+<style>
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: url('https://eliteextra.com/wp-content/uploads/2024/05/exploring-the-7-main-types-of-delivery-header.png') no-repeat center center fixed;
+        background-size: cover;
+        color: #333;
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: #444;
+    }
+
+
+    .container {
+        width: 90%;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .section {
+        margin-bottom: 20px;
+        padding: 10px 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+
+    form div {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+
+    .radio-group {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .radio-group input[type="radio"] {
+        display: none; 
+    }
+
+    .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .radio-group label::before {
+        content: "";
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .radio-group input[type="radio"]:checked + label::before {
+        border-color: rgb(64, 202, 179);
+        background-color: rgb(64, 202, 179);
+        box-shadow: inset 0 0 0 3px white;
+    }
+
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: rgb(64, 202, 179);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.02);
+    }
+</style>
 {% endblock %}
-{% block head %}
-<body>
-    <div class="container">
-        <h1>Dodaj Przesyłkę, Odbiorcę i Adres</h1>
-        <form action="/add_package" method="POST">
-            <!-- Sekcja Odbiorca -->
+
+{% block body %}
+<div class="container">
+    <h1>Dodaj Przesyłkę, Odbiorcę i Adres</h1>
+    <form action="/add_package" method="POST">
+        <!-- Sekcja Odbiorca -->
+        <div class="section">
             <h2>Dane Odbiorcy</h2>
+            <div class="radio-group">
+                <input type="radio" id="private" name="user-type" value="private" required onclick="toggleFields()" checked>
+                <label for="private">Osoba prywatna</label>
+                <input type="radio" id="company" name="user-type" value="company" onclick="toggleFields()">
+                <label for="company">Firma</label>
+            </div>
             <div>
                 <label for="email">E-Mail</label>
                 <input type="email" id="email" name="p_email" required>
@@ -51,20 +139,22 @@
                 <label for="phone">Numer telefonu</label>
                 <input type="text" id="phone" name="p_nr_tel" required>
             </div>
-            <div>
-                <label for="company_name">Nazwa firmy</label>
-                <input type="text" id="company_name" name="p_nazwa">
+            <div id="name-field">
+                <label for="company_name" id="name-label">Imię</label>
+                <input type="text" id="company_name" name="p_nazwa" required>
             </div>
-            <div>
+            <div id="surname-field">
                 <label for="surname">Nazwisko</label>
                 <input type="text" id="surname" name="p_nazwisko">
             </div>
-            <div>
+            <div id="nip-field" style="display: none;">
                 <label for="nip">NIP</label>
                 <input type="text" id="nip" name="p_nip">
             </div>
+        </div>
 
-            <!-- Sekcja Adres -->
+        <!-- Sekcja Adres -->
+        <div class="section">
             <h2>Adres</h2>
             <div>
                 <label for="street">Ulica</label>
@@ -90,16 +180,40 @@
                 <label for="country">Kraj</label>
                 <input type="text" id="country" name="p_kraj" required>
             </div>
-
-            <!-- Sekcja Przesyłka -->
+        </div>
+        <div class="section">
             <h2>Przesyłka</h2>
             <div>
                 <label for="weight">Waga (kg)</label>
-                <input type="number" id="weight" name="p_waga" required>
+                <input type="number" id="weight" name="p_waga" min="0" step="0.01" required>
             </div>
-            <div>
-                <button type="submit">Dodaj Przesyłkę</button>
-            </div>
-        </form>
-    </div>
+        </div>
+
+        <!-- Przycisk -->
+        <div>
+            <button type="submit">Dodaj Przesyłkę</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function toggleFields() {
+        const isPrivate = document.getElementById('private').checked;
+        const nameLabel = document.getElementById('name-label');
+        const surnameField = document.getElementById('surname-field');
+        const nipField = document.getElementById('nip-field');
+
+        if (isPrivate) {
+            nameLabel.textContent = 'Imię';
+            surnameField.style.display = 'block';
+            nipField.style.display = 'none';
+        } else {
+            nameLabel.textContent = 'Nazwa firmy';
+            surnameField.style.display = 'none';
+            nipField.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
 {% endblock %}
