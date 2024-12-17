@@ -1,20 +1,41 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<style>
+    button{
+        width: 200px;
+        height: 50px;
+        background-color: rgb(64, 202, 179);
+        border: none;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        font-weight: bolder;
+       
 
+    }
+    .mid-box{
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+</style>
 {% endblock %}
 
 {% block body %}
-<h1>Wybierz akcję</h1>
-<form action="/action1" method="POST">
-    <button type="submit">Nadaj przesyłkę</button>
-</form>
-<form action="/action2" method="POST">
-    <button type="submit">Wyświetl historię przesyłek</button>
-</form>
-<form action="/action3" method="POST">
-    <button type="submit">rej</button>
-</form>
+<div class="mid-box">
+    <h1>Wybierz akcję</h1>
+    <form action="/action1" method="POST">
+        <button type="submit">Nadaj przesyłkę</button>
+    </form>
+    <form action="/action2" method="POST">
+        <button type="submit">Wyświetl historię przesyłek</button>
+    </form>
+    <form action="/action3" method="POST">
+        <button type="submit">Rejestracja</button>
+    </form>
+</div>
+
 <script>
     // Wyświetlanie alertu, jeśli jest komunikat o błędzie
     const errorMessage = "{{ error_message }}";

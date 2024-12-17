@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodaj Przesyłkę, Odbiorcę i Adres</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 600px;
+            margin: 0 auto;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+{% endblock %}
+{% block head %}
+<body>
+    <div class="container">
+        <h1>Dodaj Przesyłkę, Odbiorcę i Adres</h1>
+        <form action="/add_package" method="POST">
+            <!-- Sekcja Odbiorca -->
+            <h2>Dane Odbiorcy</h2>
+            <div>
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="p_email" required>
+            </div>
+            <div>
+                <label for="phone">Numer telefonu</label>
+                <input type="text" id="phone" name="p_nr_tel" required>
+            </div>
+            <div>
+                <label for="company_name">Nazwa firmy</label>
+                <input type="text" id="company_name" name="p_nazwa">
+            </div>
+            <div>
+                <label for="surname">Nazwisko</label>
+                <input type="text" id="surname" name="p_nazwisko">
+            </div>
+            <div>
+                <label for="nip">NIP</label>
+                <input type="text" id="nip" name="p_nip">
+            </div>
+
+            <!-- Sekcja Adres -->
+            <h2>Adres</h2>
+            <div>
+                <label for="street">Ulica</label>
+                <input type="text" id="street" name="p_ulica" required>
+            </div>
+            <div>
+                <label for="building">Numer budynku</label>
+                <input type="text" id="building" name="p_nr_budynku" required>
+            </div>
+            <div>
+                <label for="apartment">Numer mieszkania</label>
+                <input type="text" id="apartment" name="p_nr_mieszkania">
+            </div>
+            <div>
+                <label for="city">Miasto</label>
+                <input type="text" id="city" name="p_miasto" required>
+            </div>
+            <div>
+                <label for="postal_code">Kod pocztowy</label>
+                <input type="text" id="postal_code" name="p_kod_pocztowy" required>
+            </div>
+            <div>
+                <label for="country">Kraj</label>
+                <input type="text" id="country" name="p_kraj" required>
+            </div>
+
+            <!-- Sekcja Przesyłka -->
+            <h2>Przesyłka</h2>
+            <div>
+                <label for="weight">Waga (kg)</label>
+                <input type="number" id="weight" name="p_waga" required>
+            </div>
+            <div>
+                <button type="submit">Dodaj Przesyłkę</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -38,29 +38,29 @@ button {
             <label for="user-input">Zarejestruj się: </label>
         </div>
         <div>
-            <label for="user-input"> Wybierz jedno: </label>
-            <input type="radio" id="str" name="user-input" value="private" required> Osoba prywatna
-            <input type="radio" id="str" name="user-input" value="company" required> Firma
+            <label>Wybierz jedno:</label>
+            <input type="radio" id="private" name="user-type" value="private" required onclick="toggleNIP()" checked> Osoba prywatna
+            <input type="radio" id="company" name="user-type" value="company" required onclick="toggleNIP()"> Firma
         </div>
         <div>
             <label for="email">E-Mail</label>
             <input type="email" id="email" name="email" required>
         </div>
-        <div>
-            <label for="user-input">NIP</label>
-            <input type="text" id="user-input" name="user-input">
+        <div id="nip-field">
+            <label for="nip">NIP</label>
+            <input type="text" id="nip" name="nip">
         </div>
         <div>
-            <label for="user-input">Nr. tel</label>
-            <input type="text" id="user-input" name="user-input" required>
+            <label for="phone">Nr. tel</label>
+            <input type="text" id="phone" name="phone" required>
         </div>
         <div>
-            <label for="user-input">Imie lub nazwa firmy</label>
-            <input type="email" id="user-input" name="user-input" required>
+            <label for="name" id="name-label">Imię</label>
+            <input type="text" id="name" name="name" required>
         </div>
-        <div>
-            <label for="user-input">Nazwisko</label>
-            <input type="email" id="user-input" name="user-input">
+        <div id="surn">
+            <label for="surname">Nazwisko</label>
+            <input type="text" id="surname" name="surname">
         </div>
         <div>
             <button type="submit">Zarejestruj</button>
@@ -71,12 +71,37 @@ button {
             <button type="submit">Powrót</button>
         </form>
     </div>
+    {% if success_message %}
+        <p style="color: green;">{{ success_message }}</p>
+    {% endif %}
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
     <script>
         // Wyświetlanie alertu, jeśli jest komunikat o błędzie
         const errorMessage = "{{ error_message }}";
         if (errorMessage) {
             alert(errorMessage);
         }
+
+        function toggleNIP() {
+            const nipField = document.getElementById('nip-field');
+            const privateOption = document.getElementById('private');
+            const sur = document.getElementById('surn')
+            const nameLabel = document.getElementById('name-label');
+            if (privateOption.checked) {
+                nipField.style.display = 'none'; // Ukryj pole NIP
+                sur.style.display = 'block';
+                nameLabel.textContent = 'Imię';
+            } else {
+                nipField.style.display = 'block';
+                sur.style.display = 'none';
+                nameLabel.textContent = 'Nazwa'; 
+            }
+        }
+
+        // Wywołaj funkcję przy ładowaniu, aby ustawić stan początkowy
+        document.addEventListener('DOMContentLoaded', toggleNIP);
     </script>
 </div>
 {% endblock %}
