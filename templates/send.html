@@ -98,22 +98,87 @@
 
 
     button {
-        display: block;
-        width: 100%;
-        padding: 12px;
-        background-color: rgb(64, 202, 179);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.2s;
+    display: block; /* Blokowy element dla wyśrodkowania */
+    margin: 20px auto; /* Automatyczne wyśrodkowanie */
+    width: 50%; /* Przycisk zajmuje połowę szerokości rodzica */
+    max-width: 300px; /* Maksymalna szerokość */
+    padding: 12px 20px;
+    background-color: rgb(64, 202, 179);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     button:hover {
         background-color: rgb(54, 162, 149);
-        transform: scale(1.02);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+        background-color: rgb(44, 122, 119);
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        display: none; /* Ukryj domyślny checkbox */
+    }
+
+    .checkbox-container label {
+        position: relative;
+        padding-left: 35px;
+        cursor: pointer;
+        font-size: 16px;
+        color: #555;
+        user-select: none;
+    }
+
+    .checkbox-container label::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        background-color: white;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .checkbox-container input[type="checkbox"]:checked + label::before {
+        background-color: rgb(64, 202, 179);
+        border-color: rgb(64, 202, 179);
+    }
+
+    .checkbox-container label::after {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        transform: translateY(-50%) scale(0);
+        width: 10px;
+        height: 10px;
+        background-color: white;
+        border-radius: 2px;
+        transition: transform 0.3s;
+    }
+
+    .checkbox-container input[type="checkbox"]:checked + label::after {
+        transform: translateY(-50%) scale(1);
     }
 </style>
 {% endblock %}
@@ -121,7 +186,7 @@
 {% block body %}
 <div class="container">
     <h1>Dodaj Przesyłkę, Odbiorcę i Adres</h1>
-    <form action="/add_package" method="POST">
+    <d action="/add_package" method="POST">
         <!-- Sekcja Odbiorca -->
         <div class="section">
             <h2>Dane Odbiorcy</h2>
@@ -187,11 +252,53 @@
                 <label for="weight">Waga (kg)</label>
                 <input type="number" id="weight" name="p_waga" min="0" step="0.01" required>
             </div>
-        </div>
 
-        <!-- Przycisk -->
-        <div>
-            <button type="submit">Dodaj Przesyłkę</button>
+            <div></div>
+                <label for="description">Opis</label>
+                <div id="description">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="chemia" name="p_opis[]" value="chemia">
+                        <label for="chemia">Chemia</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="szkło" name="p_opis[]" value="szkło">
+                        <label for="szkło">Szkło</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="zwierzę" name="p_opis[]" value="zwierzę">
+                        <label for="zwierzę">Zwierzę</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="żywność" name="p_opis[]" value="żywność">
+                        <label for="żywność">Żywność</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="delikatne" name="p_opis[]" value="delikatne">
+                        <label for="delikatne">Delikatne</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="niska_temperatura" name="p_opis[]" value="niska temperatura">
+                        <label for="niska_temperatura">Niska temperatura</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="łatwopalne" name="p_opis[]" value="łatwopalne">
+                        <label for="łatwopalne">Łatwopalne</label>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="inne" name="p_opis[]" value="inne" onclick="toggleOtherField()">
+                        <label for="inne">Inne</label>
+                    </div>
+                </div>
+            
+            <div id="other-field">
+                <label for="other-text">Proszę określić:</label>
+                <input type="text" id="other-text" name="other_text">
+            </div>
+            </div>
+            <!-- Przycisk -->
+            <div id="submit">
+                <button type="submit">Dodaj Przesyłkę</button>
+            </div>
         </div>
     </form>
 </div>
@@ -213,7 +320,19 @@
             nipField.style.display = 'block';
         }
     }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('other-field').style.display = 'none';
+    });
 
-    document.addEventListener('DOMContentLoaded', toggleFields);
+    // Funkcja do przełączania widoczności pola
+    function toggleOtherField() {
+        var otherField = document.getElementById('other-field');
+        var otherCheckbox = document.getElementById('inne');
+        if (otherCheckbox.checked) {
+            otherField.style.display = 'block';
+        } else {
+            otherField.style.display = 'none';
+        }
+    }
 </script>
 {% endblock %}

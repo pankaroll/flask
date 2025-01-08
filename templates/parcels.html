@@ -108,6 +108,7 @@
                 <th>ID Przesyłki</th>
                 <th>Waga</th>
                 <th>Data nadania</th>
+                <th>Data dostarczenia</th>
             </tr>
         </thead>
         <tbody>
@@ -116,6 +117,7 @@
                     <td>{{ parcel[0] }}</td>
                     <td>{{ parcel[1] }}</td>
                     <td>{{ parcel[2] }}</td>
+                    <td>{{ parcel[3] if parcel[3] is not none else "W trakcie realizacji"}}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -123,3 +125,4 @@
 
 <a href="/">Powrót do strony głównej</a>
 {% endblock %}
+
