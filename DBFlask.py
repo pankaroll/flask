@@ -39,7 +39,7 @@ def action2():
 
 @app.route('/action3', methods=['GET', 'POST'])
 def action3():
-    int(id_sender_find("firma1@przyklad.com"))
+    #int(id_sender_find("firma1@przyklad.com"))
     return render_template('register.html')
 
 @app.route ('/send', methods = ['GET', 'POST'])
@@ -85,36 +85,52 @@ def add_package():
     id_send = id_sender_find(stored_text)
     conn = get_db_connection()
     cursor = conn.cursor()
-    print("id: ")
-    print(id_send)
-    
-    
+
     try:
+        # Dodanie przesyłki i pobranie ID_PRZESYLKI
         cursor.execute("""
-    EXECUTE PROCEDURE DodajPrzesylkeOdbiorceAdres (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-    )
-""", (
-    str(data['p_email']),         
-    int(data['p_nr_tel']),        
-    str(data['p_nazwa']),          
-    str(data['p_nazwisko']),       
-    str(data['p_nip']),            
-    str(data['p_ulica']),          
-    str(data['p_nr_budynku']),     
-    str(data['p_nr_mieszkania']),  
-    str(data['p_miasto']),         
-    str(data['p_kod_pocztowy']),   
-    str(data['p_kraj']),           
-    int(data['p_waga']),           
-    current_date,                 
-    None,                         
-    employee_id,               
-    id_send
-    )                
-)
+            EXECUTE PROCEDURE DodajPrzesylkeOdbiorceAdres (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
+        """, (
+            str(data['p_email']),
+            int(data['p_nr_tel']),
+            str(data['p_nazwa']),
+            str(data['p_nazwisko']),
+            str(data['p_nip']),
+            str(data['p_ulica']),
+            str(data['p_nr_budynku']),
+            str(data['p_nr_mieszkania']),
+            str(data['p_miasto']),
+            str(data['p_kod_pocztowy']),
+            str(data['p_kraj']),
+            int(data['p_waga']),
+            current_date,
+            None,
+            employee_id,
+            id_send
+        ))
+        cursor.execute("SELECT MAX(ID_PRZESYLKI) FROM PRZESYLKI")
+        id_przesylki = cursor.fetchone()[0]
+
+        # Obsługa checkboxów z opisem
+        if 'p_opis[]' in data:
+            selected_options = data.getlist('p_opis[]')
+
+            # Dodanie "Inne" z niestandardowym tekstem, jeśli wybrano
+            if 'inne' in selected_options and 'other_text' in data and data['other_text']:
+                selected_options.remove('inne')
+                selected_options.append(data['other_text'])
+
+            # Dodanie rekordów do tabeli Zlecenia_specjalne
+            for option in selected_options:
+                cursor.execute("""
+                    INSERT INTO Zlecenia_specjalne (ID_PRZESYLKI, RODZAJ)
+                    VALUES (?, ?)
+                """, (id_przesylki, option))
+
         conn.commit()
-        message = "Przesyłka została pomyślnie dodana!"
+        message = "Przesyłka została pomyślnie dodana wraz z opcjami specjalnymi!"
     except Exception as e:
         conn.rollback()
         message = f"Błąd: {e}"
@@ -122,6 +138,7 @@ def add_package():
         conn.close()
 
     return render_template('confirmation.html', message=message)
+
 
 
 @app.route('/logowanie', methods=['GET', 'POST'])
@@ -166,15 +183,43 @@ def parcels():
     conn = get_db_connection()
     cursor = conn.cursor()
     query = """
-    SELECT p.*
-    FROM Przesylki p
-    JOIN Odbiorca o ON p.ID_Odbiorcy = o.ID_Odbiorcy
-    WHERE o.EMAIL = ?
+    SELECT 
+        p.ID_PRZESYLKI, 
+        p.WAGA, 
+        p.DATA_NADANIA, 
+        p.DATA_DOSTARCZENIA, 
+        zs.RODZAJ
+    FROM 
+        PRZESYLKI p
+    LEFT JOIN 
+        ZLECENIA_SPECJALNE zs ON p.ID_PRZESYLKI = zs.ID_PRZESYLKI
+    JOIN 
+        ODBIORCA o ON p.ID_ODBIORCY = o.ID_ODBIORCY
+    WHERE 
+        o.EMAIL = ?
+    ORDER BY 
+        p.ID_PRZESYLKI
     """
     cursor.execute(query, (email,))
     results = cursor.fetchall()
     conn.close()
-    return render_template('parcels.html', email=email, parcels=results)
+    
+    # Grupa danych przesyłek z ich zleceniami specjalnymi
+    parcels = {}
+    for row in results:
+        parcel_id = row[0]
+        if parcel_id not in parcels:
+            parcels[parcel_id] = {
+                "id": row[0],
+                "waga": row[1],
+                "data_nadania": row[2],
+                "data_dostarczenia": row[3],
+                "zlecenia_specjalne": []
+            }
+        if row[4]:
+            parcels[parcel_id]["zlecenia_specjalne"].append(row[4])
+    
+    return render_template('parcels.html', email=email, parcels=list(parcels.values()))
 
 def id_sender_find(email):
     conn = get_db_connection()

@@ -51,6 +51,15 @@
         transition: background-color 0.3s;
     }
 
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        text-align: center;
+        font-size: 14px;
+        color: #555;
+    }
+
     p {
         text-align: center;
         font-size: 18px;
@@ -102,27 +111,38 @@
 {% block body %}
 <h1>Przesyłki dla: {{ email }}</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID Przesyłki</th>
-                <th>Waga</th>
-                <th>Data nadania</th>
-                <th>Data dostarczenia</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for parcel in parcels %}
-                <tr>
-                    <td>{{ parcel[0] }}</td>
-                    <td>{{ parcel[1] }}</td>
-                    <td>{{ parcel[2] }}</td>
-                    <td>{{ parcel[3] if parcel[3] is not none else "W trakcie realizacji"}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table>
+    <thead>
+        <tr>
+            <th>ID Przesyłki</th>
+            <th>Waga</th>
+            <th>Data nadania</th>
+            <th>Data dostarczenia</th>
+            <th>Zlecenia Specjalne</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for parcel in parcels %}
+        <tr>
+            <td>{{ parcel.id }}</td>
+            <td>{{ parcel.waga }}</td>
+            <td>{{ parcel.data_nadania }}</td>
+            <td>{{ parcel.data_dostarczenia if parcel.data_dostarczenia is not none else "W trakcie realizacji" }}</td>
+            <td>
+                {% if parcel.zlecenia_specjalne %}
+                <ul>
+                    {% for zlecenie in parcel.zlecenia_specjalne %}
+                    <li>{{ zlecenie }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                Brak
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 <a href="/">Powrót do strony głównej</a>
 {% endblock %}
-
