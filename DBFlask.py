@@ -17,7 +17,8 @@ def get_db_connection():
     return fdb.connect(
         dsn=db_path,
         user='SYSDBA',
-        password='MASTERKEY'
+        password='MASTERKEY',
+        charset='UTF8'
     )
 
 
@@ -41,6 +42,12 @@ def action2():
 def action3():
     #int(id_sender_find("firma1@przyklad.com"))
     return render_template('register.html')
+
+@app.route('/admin_panel', methods=['GET'])
+def admin_panel():
+    # Możesz dodać logikę wyświetlania panelu administratora
+    return render_template('admin_panel.html')
+
 
 @app.route ('/send', methods = ['GET', 'POST'])
 def send():
@@ -262,6 +269,188 @@ def customer_check(text):
         return True
     else:
         return False
+    
+@app.route('/raport_przesylek', methods=['GET'])
+def raport_przesylek():
+    rok = request.args.get('rok', type=int)
+    
+    if not rok:
+        return jsonify({"error": "Musisz podać parametr 'rok'"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # 1. Liczba przesyłek wysłanych w każdym tygodniu
+        cursor.execute("""
+            SELECT 
+                EXTRACT(WEEK FROM DATA_NADANIA) AS tydzien,
+                COUNT(*) AS wszystkie_przesylki
+            FROM Przesylki
+            WHERE EXTRACT(YEAR FROM DATA_NADANIA) = ?
+            GROUP BY EXTRACT(WEEK FROM DATA_NADANIA)
+            ORDER BY tydzien
+        """, (rok,))
+        przesylki_tygodnie = cursor.fetchall()
+
+        tygodnie = {int(row[0]): row[1] for row in przesylki_tygodnie}
+
+        # 2. Liczba przesyłek do miast w każdym tygodniu
+        cursor.execute("""
+            SELECT 
+                EXTRACT(WEEK FROM p.DATA_NADANIA) AS tydzien,
+                a.MIASTO, 
+                COUNT(*) AS liczba_przesylek
+            FROM Przesylki p
+            JOIN Adres a ON p.ID_ODBIORCY = a.ID_ADRESU
+            WHERE EXTRACT(YEAR FROM p.DATA_NADANIA) = ?
+            GROUP BY EXTRACT(WEEK FROM p.DATA_NADANIA), a.MIASTO
+            ORDER BY tydzien, liczba_przesylek DESC
+        """, (rok,))
+        przesylki_do_miast = cursor.fetchall()
+
+        miasta_tygodnie = {}
+        for row in przesylki_do_miast:
+            tydzien = int(row[0])
+            miasto = row[1]
+            liczba = row[2]
+            if tydzien not in miasta_tygodnie:
+                miasta_tygodnie[tydzien] = []
+            miasta_tygodnie[tydzien].append({"miasto": miasto, "liczba_przesylek": liczba})
+
+        # 3. Procent ubezpieczonych przesyłek w każdym tygodniu
+        cursor.execute("""
+            SELECT 
+                EXTRACT(WEEK FROM p.DATA_NADANIA) AS tydzien,
+                COUNT(*) AS wszystkie_przesylki,
+                COUNT(u.ID_UBEZPIECZENIA) AS ubezpieczone_przesylki
+            FROM Przesylki p
+            LEFT JOIN Ubezpieczenie u ON p.ID_PRZESYLKI = u.ID_PRZESYLKI
+            WHERE EXTRACT(YEAR FROM p.DATA_NADANIA) = ?
+            GROUP BY EXTRACT(WEEK FROM p.DATA_NADANIA)
+            ORDER BY tydzien
+        """, (rok,))
+        ubezpieczone_tygodnie = cursor.fetchall()
+
+        procent_ubezpieczonych = {}
+        for row in ubezpieczone_tygodnie:
+            tydzien = int(row[0])
+            wszystkie = row[1]
+            ubezpieczone = row[2]
+            procent = (ubezpieczone * 100.0 / wszystkie) if wszystkie > 0 else 0
+            procent_ubezpieczonych[tydzien] = round(procent, 2)
+
+    finally:
+        conn.close()
+
+    # Tworzenie raportu dla każdego tygodnia
+    raport = []
+    for tydzien in sorted(tygodnie.keys()):
+        raport.append({
+            "tydzien": tydzien,
+            "wszystkie_przesylki": tygodnie[tydzien],
+            "przesylki_do_miast": miasta_tygodnie.get(tydzien, []),
+            "procent_ubezpieczonych": procent_ubezpieczonych.get(tydzien, 0.0)
+        })
+
+    return render_template('raport_przesylek.html', rok=rok, raporty=raport)
+
+@app.route('/raport_uzytkownikow', methods=['GET'])
+def raport_uzytkownikow():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Liczba nadawców
+        cursor.execute("SELECT COUNT(*) FROM Nadawca")
+        liczba_nadawcow = cursor.fetchone()[0]
+
+        # Liczba unikalnych odbiorców
+        cursor.execute("SELECT COUNT(*) FROM Odbiorca")
+        liczba_odbiorcow = cursor.fetchone()[0]
+
+    finally:
+        conn.close()
+
+    # Generowanie raportu
+    raport = {
+        "liczba_nadawcow": liczba_nadawcow,
+        "liczba_odbiorcow": liczba_odbiorcow
+    }
+
+    return render_template('raport_uzytkownikow.html', raport=raport)
+
+@app.route('/raport_pracownikow', methods=['GET'])
+def raport_pracownikow():
+    rok = request.args.get('rok', type=int)
+    if not rok:
+        return jsonify({"error": "Musisz podać parametr 'rok'"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # 1. Liczba przesyłek przypisanych do każdego kuriera w danym roku
+        cursor.execute("""
+            SELECT 
+                p.ID_PRACOWNIKA, 
+                pr.IMIE || ' ' || pr.NAZWISKO AS pracownik,
+                COUNT(*) AS liczba_przesylek
+            FROM Przesylki p
+            JOIN Pracownicy pr ON p.ID_PRACOWNIKA = pr.ID_PRACOWNIKA
+            WHERE pr.STANOWISKO = 'kurier' AND EXTRACT(YEAR FROM p.DATA_NADANIA) = ?
+            GROUP BY p.ID_PRACOWNIKA, pr.IMIE, pr.NAZWISKO
+            ORDER BY liczba_przesylek DESC
+        """, (rok,))
+        przesylki_kurierzy = cursor.fetchall()
+
+        # 2. Liczba urlopów dla każdego pracownika w danym roku
+        cursor.execute("""
+            SELECT 
+                u.ID_PRACOWNIKA,
+                pr.IMIE || ' ' || pr.NAZWISKO AS pracownik,
+                COUNT(*) AS liczba_urlopow
+            FROM Urlop u
+            JOIN Pracownicy pr ON u.ID_PRACOWNIKA = pr.ID_PRACOWNIKA
+            WHERE EXTRACT(YEAR FROM u.DATA_ROZPOCZECIA) = ?
+            GROUP BY u.ID_PRACOWNIKA, pr.IMIE, pr.NAZWISKO
+            ORDER BY liczba_urlopow DESC
+        """, (rok,))
+        urlopy_pracownicy = cursor.fetchall()
+
+        # 3. Liczba urlopów w poszczególnych miesiącach
+        cursor.execute("""
+            SELECT 
+                EXTRACT(MONTH FROM u.DATA_ROZPOCZECIA) AS miesiac,
+                COUNT(*) AS liczba_urlopow
+            FROM Urlop u
+            WHERE EXTRACT(YEAR FROM u.DATA_ROZPOCZECIA) = ?
+            GROUP BY EXTRACT(MONTH FROM u.DATA_ROZPOCZECIA)
+            ORDER BY miesiac
+        """, (rok,))
+        urlopy_miesiace = cursor.fetchall()
+
+    finally:
+        conn.close()
+
+    # Formatowanie danych
+    raport_przesylki = [
+        {"pracownik": row[1], "liczba_przesylek": row[2]} for row in przesylki_kurierzy
+    ]
+    raport_urlopy = [
+        {"pracownik": row[1], "liczba_urlopow": row[2]} for row in urlopy_pracownicy
+    ]
+    urlopy_miesieczne = {int(row[0]): row[1] for row in urlopy_miesiace}
+
+    return render_template(
+        'raport_pracownikow.html',
+        rok=rok,
+        przesylki=raport_przesylki,
+        urlopy=raport_urlopy,
+        urlopy_miesiace=urlopy_miesieczne
+    )
+
+
     
 if __name__=='__main__':
     app.run(debug=True)

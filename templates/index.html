@@ -11,6 +11,34 @@
         color: #333;
     }
 
+    .header {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .header button {
+        background-color: rgb(64, 202, 179);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .header button:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.05);
+    }
+
+    .header button:active {
+        background-color: rgb(44, 142, 129);
+        transform: scale(0.98);
+    }
+
     .mid-box {
         width: 300px;
         margin: 100px auto;
@@ -26,7 +54,6 @@
         font-size: 24px;
         color: #444;
     }
-
 
     button {
         width: 100%;
@@ -55,6 +82,12 @@
 {% endblock %}
 
 {% block body %}
+<div class="header">
+    <form action="/admin_panel" method="GET">
+        <button type="submit">Panel Administratora</button>
+    </form>
+</div>
+
 <div class="mid-box">
     <h1>Wybierz akcję</h1>
     <form action="/action1" method="POST">
@@ -70,5 +103,4 @@
         <p style="color: red;">{{ error_message }}</p>
     {% endif %}
 </div>
-
 {% endblock %}

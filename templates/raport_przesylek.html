@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raport Przesyłek</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .table-container {
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1200px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .city-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .city-list li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Raport Przesyłek - Rok {{ rok }}</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tydzień</th>
+                    <th>Wszystkie Przesyłki</th>
+                    <th>Miasta Docelowe</th>
+                    <th>Procent Ubezpieczonych</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for raport in raporty %}
+                <tr>
+                    <td>{{ raport.tydzien }}</td>
+                    <td>{{ raport.wszystkie_przesylki }}</td>
+                    <td>
+                        <ul class="city-list">
+                            {% for miasto in raport.przesylki_do_miast %}
+                            <li>{{ miasto.miasto }}: {{ miasto.liczba_przesylek }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ raport.procent_ubezpieczonych }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

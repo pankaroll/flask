@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raport Użytkowników</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .report {
+            margin: 20px auto;
+            width: 50%;
+            text-align: center;
+        }
+        .report table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 400px;
+        }
+        .report th, .report td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .report th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Raport Użytkowników</h1>
+    <div class="report">
+        <table>
+            <tr>
+                <th>Liczba Nadawców</th>
+                <td>{{ raport.liczba_nadawcow }}</td>
+            </tr>
+            <tr>
+                <th>Liczba Unikalnych Odbiorców</th>
+                <td>{{ raport.liczba_odbiorcow }}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

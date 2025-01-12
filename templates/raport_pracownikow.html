@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        margin: 0 auto;
+        max-width: 800px;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1>Raport Pracowników - Rok {{ rok }}</h1>
+
+    <h2>Przesyłki Przypisane do Kurierów</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Pracownik</th>
+                <th>Liczba Przesyłek</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for przesylka in przesylki %}
+            <tr>
+                <td>{{ przesylka.pracownik }}</td>
+                <td>{{ przesylka.liczba_przesylek }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Urlopy Pracowników</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Pracownik</th>
+                <th>Liczba Urlopów</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for urlop in urlopy %}
+            <tr>
+                <td>{{ urlop.pracownik }}</td>
+                <td>{{ urlop.liczba_urlopow }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Urlopy w Poszczególnych Miesiącach</h2>
+    <canvas id="urlopyChart"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('urlopyChart').getContext('2d');
+    const urlopyData = {
+        labels: [
+            'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+            'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+        ],
+        datasets: [{
+            label: 'Liczba Urlopów',
+            data: [
+                {% for miesiac in range(1, 13) %}
+                {{ urlopy_miesiace.get(miesiac, 0) }}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ],
+            backgroundColor: 'rgba(64, 202, 179, 0.5)',
+            borderColor: 'rgba(64, 202, 179, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: urlopyData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        margin: 0 auto;
+        max-width: 800px;
+        text-align: center;
+    }
+
+    .content form {
+        margin: 15px 0;
+    }
+
+    .content input,
+    .content button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .content input {
+        width: 150px;
+        text-align: center;
+        border: 1px solid #ccc;
+    }
+
+    .content button {
+        background-color: rgb(64, 202, 179);
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .content button:hover {
+        background-color: rgb(54, 162, 149);
+        transform: scale(1.05);
+    }
+
+    .content button:active {
+        background-color: rgb(44, 142, 129);
+        transform: scale(0.98);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1>Panel Administratora</h1>
+    <p>Wybierz rok dla raportów:</p>
+    <form action="/raport_pracownikow" method="GET">
+        <input type="number" name="rok" placeholder="Wprowadź rok" min="2000" max="2100" required>
+        <button type="submit">Raport Pracowników</button>
+    </form>
+    <form action="/raport_przesylek" method="GET">
+        <input type="number" name="rok" placeholder="Wprowadź rok" min="2000" max="2100" required>
+        <button type="submit">Raport Przesyłek</button>
+    </form>
+</div>
+{% endblock %}
