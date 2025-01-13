@@ -14,14 +14,14 @@
         }
         .report {
             margin: 20px auto;
-            width: 50%;
+            width: 70%;
             text-align: center;
         }
         .report table {
             margin: 0 auto;
             border-collapse: collapse;
             width: 100%;
-            max-width: 400px;
+            max-width: 600px;
         }
         .report th, .report td {
             border: 1px solid #ccc;
@@ -43,6 +43,26 @@
             <tr>
                 <th>Liczba Unikalnych Odbiorców</th>
                 <td>{{ raport.liczba_odbiorcow }}</td>
+            </tr>
+            <tr>
+                <th>Liczba Nadawców - Firmy</th>
+                <td>{{ raport.liczba_nadawcow_firm }}</td>
+            </tr>
+            <tr>
+                <th>Liczba Nadawców - Osoby Prywatne</th>
+                <td>{{ raport.liczba_nadawcow_prywatnych }}</td>
+            </tr>
+            <tr>
+                <th>Najbardziej Aktywny Nadawca (ID)</th>
+                <td>{{ raport.najbardziej_aktywny_nadawca[0] }}</td>
+            </tr>
+            <tr>
+                <th>Liczba Przesyłek Najbardziej Aktywnego Nadawcy</th>
+                <td>{{ raport.najbardziej_aktywny_nadawca[1] }}</td>
+            </tr>
+            <tr>
+                <th>Średnia Liczba Przesyłek na Nadawcę</th>
+                <td>{{ raport.srednia_przesylek_na_nadawce }}</td>
             </tr>
         </table>
     </div>

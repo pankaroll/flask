@@ -120,16 +120,23 @@ def add_package():
         cursor.execute("SELECT MAX(ID_PRZESYLKI) FROM PRZESYLKI")
         id_przesylki = cursor.fetchone()[0]
 
+        # Dodanie ubezpieczenia, jeśli wybrane
+        if 'p_insurance' in data and data['p_insurance'] == '1':
+            insurance_amount = int(data.get('p_insurance_amount', 0))
+            if insurance_amount > 0:
+                cursor.execute("""
+                    INSERT INTO Ubezpieczenie (KWOTA, ID_PRZESYLKI)
+                    VALUES (?, ?)
+                """, (insurance_amount, id_przesylki))
+
         # Obsługa checkboxów z opisem
         if 'p_opis[]' in data:
             selected_options = data.getlist('p_opis[]')
 
-            # Dodanie "Inne" z niestandardowym tekstem, jeśli wybrano
             if 'inne' in selected_options and 'other_text' in data and data['other_text']:
                 selected_options.remove('inne')
                 selected_options.append(data['other_text'])
 
-            # Dodanie rekordów do tabeli Zlecenia_specjalne
             for option in selected_options:
                 cursor.execute("""
                     INSERT INTO Zlecenia_specjalne (ID_PRZESYLKI, RODZAJ)
@@ -137,7 +144,7 @@ def add_package():
                 """, (id_przesylki, option))
 
         conn.commit()
-        message = "Przesyłka została pomyślnie dodana wraz z opcjami specjalnymi!"
+        message = "Przesyłka została pomyślnie dodana wraz z opcjami specjalnymi i ubezpieczeniem!"
     except Exception as e:
         conn.rollback()
         message = f"Błąd: {e}"
@@ -145,6 +152,7 @@ def add_package():
         conn.close()
 
     return render_template('confirmation.html', message=message)
+
 
 
 
@@ -369,16 +377,63 @@ def raport_uzytkownikow():
         cursor.execute("SELECT COUNT(*) FROM Odbiorca")
         liczba_odbiorcow = cursor.fetchone()[0]
 
+        # Liczba nadawców - firmy
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM Nadawca
+            WHERE ID_NADAWCY IN (SELECT ID_NADAWCY FROM Firma)
+        """)
+        liczba_nadawcow_firm = cursor.fetchone()[0]
+
+        # Liczba nadawców - osoby prywatne
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM Nadawca
+            WHERE ID_NADAWCY IN (SELECT ID_NADAWCY FROM Osoba_prywatna)
+        """)
+        liczba_nadawcow_prywatnych = cursor.fetchone()[0]
+
+        # Najbardziej aktywny nadawca
+        cursor.execute("""
+            SELECT ID_NADAWCY, COUNT(*) AS LiczbaPrzesylek
+            FROM Przesylki
+            GROUP BY ID_NADAWCY
+            ORDER BY LiczbaPrzesylek DESC
+            FETCH FIRST 1 ROWS ONLY
+        """)
+        najbardziej_aktywny_nadawca = cursor.fetchone()
+        if not najbardziej_aktywny_nadawca:
+            najbardziej_aktywny_nadawca = (None, 0)
+
+        # Średnia liczba przesyłek na nadawcę
+        cursor.execute("""
+            SELECT AVG(LiczbaPrzesylek) AS SredniaPrzesylekNaNadawce
+            FROM (
+                SELECT COUNT(*) AS LiczbaPrzesylek
+                FROM Przesylki
+                GROUP BY ID_NADAWCY
+            ) AS Subquery
+        """)
+        srednia_przesylek_na_nadawce = cursor.fetchone()[0]
+        if srednia_przesylek_na_nadawce is None:
+            srednia_przesylek_na_nadawce = 0
+
     finally:
         conn.close()
 
     # Generowanie raportu
     raport = {
         "liczba_nadawcow": liczba_nadawcow,
-        "liczba_odbiorcow": liczba_odbiorcow
+        "liczba_odbiorcow": liczba_odbiorcow,
+        "liczba_nadawcow_firm": liczba_nadawcow_firm,
+        "liczba_nadawcow_prywatnych": liczba_nadawcow_prywatnych,
+        "najbardziej_aktywny_nadawca": najbardziej_aktywny_nadawca,
+        "srednia_przesylek_na_nadawce": srednia_przesylek_na_nadawce,
     }
 
     return render_template('raport_uzytkownikow.html', raport=raport)
+
+
 
 @app.route('/raport_pracownikow', methods=['GET'])
 def raport_pracownikow():

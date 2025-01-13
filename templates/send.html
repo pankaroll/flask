@@ -289,6 +289,17 @@
                         <label for="inne">Inne</label>
                     </div>
                 </div>
+                <div class="section">
+                    <h2>Ubezpieczenie</h2>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="insurance" name="p_insurance" value="1" onclick="toggleInsuranceField()">
+                        <label for="insurance">Ubezpiecz przesyłkę</label>
+                    </div>
+                    <div id="insurance-field" style="display: none;">
+                        <label for="insurance-amount">Kwota ubezpieczenia (zł)</label>
+                        <input type="number" id="insurance-amount" name="p_insurance_amount" min="0" step="0.01">
+                    </div>
+                </div>
             
             <div id="other-field">
                 <label for="other-text">Proszę określić:</label>
@@ -332,6 +343,20 @@
             otherField.style.display = 'block';
         } else {
             otherField.style.display = 'none';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('insurance').checked = false; // Domyślnie checkbox odznaczony
+        document.getElementById('insurance-field').style.display = 'none';
+    });
+
+    function toggleInsuranceField() {
+        const insuranceField = document.getElementById('insurance-field');
+        const insuranceCheckbox = document.getElementById('insurance');
+        if (insuranceCheckbox.checked) {
+            insuranceField.style.display = 'block';
+        } else {
+            insuranceField.style.display = 'none';
         }
     }
 </script>
