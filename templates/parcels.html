@@ -119,6 +119,7 @@
             <th>Data nadania</th>
             <th>Data dostarczenia</th>
             <th>Zlecenia Specjalne</th>
+            <th>Kwota Ubezpieczenia</th> <!-- Nowa kolumna -->
         </tr>
     </thead>
     <tbody>
@@ -135,6 +136,13 @@
                     <li>{{ zlecenie }}</li>
                     {% endfor %}
                 </ul>
+                {% else %}
+                Brak
+                {% endif %}
+            </td>
+            <td>
+                {% if parcel.kwota_ubezpieczenia is not none %}
+                {{ parcel.kwota_ubezpieczenia }} zł
                 {% else %}
                 Brak
                 {% endif %}

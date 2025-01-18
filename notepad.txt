@@ -2,8 +2,18 @@ Tworzenie bazy danych:
 CREATE DATABASE '/Users/karolszopinski/firebird_lib/delivery.fdb'
 USER 'SYSDBA' PASSWORD 'masterkey';
 
+EXECUTE PROCEDURE DodajNadawce(
+    'firma@przyklad.com',
+    123356789,
+    'firma',
+    'Firma Te2towa',
+    '1234367890',
+    NULL,
+    NULL);
+
 Łączenie się:
 CONNECT '/Users/karolszopinski/firebird_lib/delivery.fdb' USER 'sysdba' PASSWORD 'masterkey';
+connect "/Users/karolszopinski/db_proj/flask-1/Database/delivery.fdb" user "SYSDBA" password "MASTERKEY";
 
 
         .---------------------------------------------------------------------------.

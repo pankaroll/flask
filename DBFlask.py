@@ -203,11 +203,14 @@ def parcels():
         p.WAGA, 
         p.DATA_NADANIA, 
         p.DATA_DOSTARCZENIA, 
-        zs.RODZAJ
+        zs.RODZAJ,
+        u.KWOTA
     FROM 
         PRZESYLKI p
     LEFT JOIN 
         ZLECENIA_SPECJALNE zs ON p.ID_PRZESYLKI = zs.ID_PRZESYLKI
+    LEFT JOIN 
+        UBEZPIECZENIE u ON p.ID_PRZESYLKI = u.ID_PRZESYLKI
     JOIN 
         ODBIORCA o ON p.ID_ODBIORCY = o.ID_ODBIORCY
     WHERE 
@@ -229,7 +232,8 @@ def parcels():
                 "waga": row[1],
                 "data_nadania": row[2],
                 "data_dostarczenia": row[3],
-                "zlecenia_specjalne": []
+                "zlecenia_specjalne": [],
+                "kwota_ubezpieczenia": row[5]  # Kwota ubezpieczenia
             }
         if row[4]:
             parcels[parcel_id]["zlecenia_specjalne"].append(row[4])
